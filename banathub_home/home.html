@@ -5,12 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banat Hub Official Site</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        .scroll-container {
+            max-height: 280px; 
+            overflow-y: auto;  
+            overflow-x: hidden;
+            padding-right: 5px;
+            margin-bottom: 10px;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #d1d1d1;
+            border-radius: 10px;
+        }
+
+        .cart-item-info strong {
+            color: #e67e22;
+        }
+        
+        /* Layout for the controls */
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .qty-btn {
+            background: #f1f2f6;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            background: #dfe4ea;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff4757;
+            transition: transform 0.1s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .quantity-badge {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body>
+<body ng-app="foodApp" ng-controller="CartController">
 
     <header>
         <div class="logo">
-            <img src="629994626_1247707730623982_5654588655489087962_n.png" alt="Banat Hub Logo"> </div>
+            <img src="629994626_1247707730623982_5654588655489087962_n.png" alt="Banat Hub Logo"> 
+        </div>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
@@ -29,7 +99,8 @@
 
     <main>
         <div class="banner-wrapper">
-            <img src="626533159_34005178872430660_4981941883228089990_n.png" alt="Boodle Fight Feast" class="banner-image"> <div class="banner-text">
+            <img src="626533159_34005178872430660_4981941883228089990_n.png" alt="Boodle Fight Feast" class="banner-image"> 
+            <div class="banner-text">
                 <h1><span>BANAT HUB</span> PHILIPPINE OFFICIAL SITE</h1>
                 <p>Welcome to Philippines' #1 Bohol Fast Food Hub</p>
             </div>
@@ -39,10 +110,10 @@
             <section class="restaurant-info">
                 <h2>Kaon Tanan!</h2>
                 <div class="rating">
-                    <span class="stars">⭐⭐⭐⭐</span>
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
                     <span class="score">5.0</span>
                     <span class="reviews">205 reviews</span>
-                    <span class="cuisine">₱₱ Filipinio</span>
+                    <span class="cuisine">₱₱ Filipino</span>
                     <span class="delivery">₱ 30 Delivery Fee</span>
                 </div>
                 <div class="status">
@@ -52,7 +123,6 @@
             </section>
 
             <div class="menu-and-cart">
-                
                 <section class="menu-section">
                     <div class="menu-categories">
                         <button class="active">Best Sellers</button>
@@ -62,24 +132,13 @@
                     </div>
                     
                     <div class="menu-grid">
-                        <div class="menu-item">
-                            <img src="Image_ytla93ytla93ytla.png" alt="Food Item">
-                        </div>
-                        <div class="menu-item">
-                            <img src="Image_lnbqa2lnbqa2lnbq.png" alt="Food Item">
-                        </div>
-                         <div class="menu-item">
-                            <img src="Image_875ofv875ofv875o.png" alt="Food Item">
-                        </div>
-                        <div class="menu-item">
-                            <img src="Image_fd7j23fd7j23fd7j.png" alt="Food Item">
-                        </div>
-                         <div class="menu-item">
-                            <img src="Image_gjddywgjddywgjdd.png" alt="Food Item">
-                        </div>
-                        <div class="menu-item">
-                            <img src="Image_4uaoob4uaoob4uao.png" alt="Food Item">
-                        </div>
+                        <a ng-href="product.html?item={{item.name}}" class="menu-item-link" ng-repeat="item in menu">
+                            <div class="menu-item">
+                                <img ng-src="{{item.img}}" alt="{{item.name}}">
+                                <p><strong>{{item.name}}</strong></p>
+                                <p class="price">₱ {{item.price}}</p>
+                            </div>
+                        </a>
                     </div>
                 </section>
 
@@ -88,72 +147,110 @@
                         <div class="cart-header">
                             <h3>Your Cart</h3>
                             <div class="cart-icons">
-                                <button>🔄</button>
-                                <button>⚙️</button>
+                                <button ng-click="cart = []" title="Clear All">🔄</button>
                             </div>
                         </div>
                         
-                        <div class="cart-items">
-                            <div class="cart-item">
-                                <img src="Image_gjddywgjddywgjdd.png" alt="Cart Item">
-                                <div class="cart-item-info">
-                                    <p>Grilled Liempo</p>
-                                    <p class="price">₱ 159</p>
+                        <div class="scroll-container">
+                            <div class="cart-items">
+                                <div class="cart-item" ng-repeat="item in cart track by $index">
+                                    <img ng-src="{{item.img}}" alt="Cart Item">
+                                    <div class="cart-item-info">
+                                        <p>{{item.name}} <strong>x{{item.quantity}}</strong></p>
+                                        <p class="price">₱ {{item.price * item.quantity}}</p>
+                                    </div>
+                                    <div class="cart-controls">
+                                        <button class="qty-btn" ng-click="reduceQuantity($index)">−</button>
+                                        <button class="qty-btn" ng-click="addQuantity($index)">+</button>
+                                        <button class="delete-btn" ng-click="deleteItem($index)" title="Remove Item">🗑️</button>
+                                    </div>
                                 </div>
-                                <span class="cart-price">₱159</span>
-                                <button class="remove">X</button>
-                            </div>
-                            <div class="cart-item">
-                                <img src="Image_ytla93ytla93ytla.png" alt="Cart Item">
-                                <div class="cart-item-info">
-                                    <p>Crispy Pork Sisig</p>
-                                    <p class="price">₱ 149</p>
-                                </div>
-                                <span class="cart-price">₱149</span>
-                                <button class="remove">X</button>
+                                <p ng-if="cart.length === 0" style="text-align:center; padding: 20px; color: #888;">Cart is empty</p>
                             </div>
                         </div>
 
                         <div class="subtotal">
                             <span>Subtotal</span>
-                            <span class="subtotal-price">₱308</span>
+                            <span class="subtotal-price">₱{{ getTotal() }}</span>
                         </div>
-
                         <button class="view-cart">View Cart</button>
                     </div>
 
                     <div class="actions-box">
                         <div class="actions-header">
-                            <h3>Menu</h3>
-                            <h3>Actions</h3>
+                            <h3>Quick Summary</h3>
                         </div>
-                        
-                        <div class="action-item">
-                            <img src="Image_gjddywgjddywgjdd.png" alt="Action Item">
-                            <div class="action-info">
-                                <p>Grilled Liempo</p>
-                                <p class="price">₱ 159</p>
+                        <div class="scroll-container">
+                            <div class="action-item" ng-repeat="item in cart track by $index">
+                                <img ng-src="{{item.img}}" alt="Action Item">
+                                <div class="action-info">
+                                    <p>{{item.name}}</p>
+                                    <p class="price">₱ {{item.price}} ea.</p>
+                                </div>
+                                <span class="quantity-badge">Qty: {{item.quantity}}</span>
                             </div>
-                            <button class="quantity">⚙ 1</button>
-                        </div>
-                         <div class="action-item">
-                            <img src="Image_ytla93ytla93ytla.png" alt="Action Item">
-                            <div class="action-info">
-                                <p>Crispy Pork Sisig</p>
-                                <p class="price">₱ 149</p>
-                            </div>
-                            <button class="quantity">⚙ 1</button>
                         </div>
                     </div>
                 </aside>
             </div>
         </div>
-
     </main>
 
     <footer>
-        <p>Product details</p>
+        <p>&copy; 2026 Banat Hub Official Site - Product details</p>
     </footer>
 
+   <script>
+angular.module('foodApp', [])
+.controller('CartController', function($scope) {
+
+    // LOAD SAVED DATA IMMEDIATELY
+    $scope.cart = JSON.parse(localStorage.getItem('banatCart')) || [];
+
+    $scope.menu = [
+        { name: 'Grilled Liempo', price: 159, img: 'Image_gjddywgjddywgjdd.png' },
+        { name: 'Crispy Pork Sisig', price: 149, img: 'Image_ytla93ytla93ytla.png' },
+        { name: 'Chicken Inasal', price: 139, img: 'Image_fd7j23fd7j23fd7j.png' },
+        { name: 'Pork BBQ', price: 99, img: 'Image_875ofv875ofv875o.png' }
+    ];
+
+    // Helper function to update the browser storage whenever changes happen
+    $scope.updateStorage = function() {
+        localStorage.setItem('banatCart', JSON.stringify($scope.cart));
+    };
+
+    $scope.addQuantity = function(index) {
+        $scope.cart[index].quantity += 1;
+        $scope.updateStorage();
+    };
+
+    $scope.reduceQuantity = function(index) {
+        if ($scope.cart[index].quantity > 1) {
+            $scope.cart[index].quantity -= 1;
+        } else {
+            $scope.cart.splice(index, 1);
+        }
+        $scope.updateStorage();
+    };
+
+    $scope.deleteItem = function(index) {
+        $scope.cart.splice(index, 1);
+        $scope.updateStorage();
+    };
+
+    $scope.clearCart = function() {
+        $scope.cart = [];
+        $scope.updateStorage();
+    };
+
+    $scope.getTotal = function() {
+        let total = 0;
+        $scope.cart.forEach(item => {
+            total += (item.price * item.quantity);
+        });
+        return total;
+    };
+});
+</script>
 </body>
 </html>
