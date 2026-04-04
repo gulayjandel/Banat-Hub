@@ -208,10 +208,22 @@ angular.module('foodApp', [])
     $scope.cart = JSON.parse(localStorage.getItem('banatCart')) || [];
 
     $scope.menu = [
-        { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png' },
-        { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png' },
-        { name: 'Pancit Malabon', price: 139, img: 'images/Image_fd7j23fd7j23fd7j.png' },
-        { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png' }
+        // Best Sellers
+    { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png' },
+    { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png' },
+    
+    // Meals
+    { name: 'Crispy Pata', price: 499, img: 'images/crispypata.png' },
+    { name: 'Sinigang na Hipon', price: 380, img: 'images/sinigang_na_hipon.png' },
+    
+    // Drinks
+    { name: 'Buko Pandan', price: 120, img: 'images/Buko_pandan.png' },
+    { name: 'Mango Bravo Shake', price: 119, img: 'images/Mango_shake.png' },
+    { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png' },
+    
+    // Add-ons
+    { name: 'Extra Atchara', price: 49, img: 'images/Atchara.png' },
+    { name: 'Java Rice', price: 55, img: 'images/Java_rice.png' }
     ];
 
     // Helper function to update the browser storage whenever changes happen
