@@ -168,25 +168,25 @@ angular.module('productApp', [])
             extras: [{ name: 'Extra Buko Strips', price: 20, selected: false }] 
         },
 'Extra Atchara': { 
-    name: 'Extra Atchara', 
-    basePrice: 49, 
-    img: 'images/Atchara.png', 
-    description: 'Our signature pickled papaya—the perfect sweet and sour side.', 
-    optionsTitle: 'Serving Size', 
-    options: ['Regular Cup'], 
-    hideRice: true, // New flag to hide the rice section
-    extras: [] 
-},
-'Java Rice': { 
-    name: 'Java Rice', 
-    basePrice: 55, 
-    img: 'images/Java_rice.png', 
-    description: 'Aromatic yellow rice seasoned with garlic and annatto.', 
-    optionsTitle: 'Portion', 
-    options: ['Single Scoop', 'Double Scoop'], 
-    hideRice: true, // New flag to hide the rice section
-    extras: [{ name: 'Extra Fried Garlic', price: 5, selected: false }] 
-}
+            name: 'Extra Atchara', 
+            basePrice: 49, 
+            img: 'images/Atchara.png', 
+            description: 'Our signature pickled papaya—the perfect sweet and sour side.', 
+            optionsTitle: 'Serving Size', 
+            options: ['Regular Cup'], 
+            hideRice: true, // Line added here
+            extras: [] 
+        },
+        'Java Rice': { 
+            name: 'Java Rice', 
+            basePrice: 55, 
+            img: 'images/Java_rice.png', 
+            description: 'Aromatic yellow rice seasoned with garlic and annatto.', 
+            optionsTitle: 'Portion', 
+            options: ['Single Scoop', 'Double Scoop'], 
+            hideRice: true, // Line added here
+            extras: [{ name: 'Extra Fried Garlic', price: 5, selected: false }] 
+        },
     };
 
     let params = new URLSearchParams(window.location.search);

@@ -84,9 +84,7 @@
         <nav>
             <ul>
                 <li><a href="home.html">Home</a></li>
-                <li><a href="#">Menu</a></li>
                 <li><a href="#">Location</a></li>
-                <li><a href="#">Promos</a></li>
                 <li><a href="franchising.html">Franchising</a></li>
                 <li><a href="AboutUs.html">About us</a></li>
             </ul>
@@ -124,15 +122,14 @@
 
             <div class="menu-and-cart">
                 <section class="menu-section">
-                    <div class="menu-categories">
-                        <button class="active">Best Sellers</button>
-                        <button>Meals</button>
-                        <button>Drinks</button>
-                        <button>Add-ons</button>
-                    </div>
+                        <div class="menu-categories">
+                            <button ng-class="{'active': activeCategory === 'Meals'}" ng-click="activeCategory = 'Meals'">Meals</button>
+                            <button ng-class="{'active': activeCategory === 'Drinks'}" ng-click="activeCategory = 'Drinks'">Drinks</button>
+                            <button ng-class="{'active': activeCategory === 'Add-ons'}" ng-click="activeCategory = 'Add-ons'">Add-ons</button>
+                        </div>
                     
                     <div class="menu-grid">
-                        <a ng-href="product.html?item={{item.name}}" class="menu-item-link" ng-repeat="item in menu">
+                        <a ng-href="product.html?item={{item.name}}" class="menu-item-link" ng-repeat="item in menu | filter:{category: activeCategory}">
                             <div class="menu-item">
                                 <img ng-src="{{item.img}}" alt="{{item.name}}">
                                 <p><strong>{{item.name}}</strong></p>
@@ -207,24 +204,26 @@ angular.module('foodApp', [])
     // LOAD SAVED DATA IMMEDIATELY
     $scope.cart = JSON.parse(localStorage.getItem('banatCart')) || [];
 
-    $scope.menu = [
-        // Best Sellers
-    { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png' },
-    { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png' },
-    
-    // Meals
-    { name: 'Crispy Pata', price: 499, img: 'images/crispypata.png' },
-    { name: 'Sinigang na Hipon', price: 380, img: 'images/sinigang_na_hipon.png' },
-    
-    // Drinks
-    { name: 'Buko Pandan', price: 120, img: 'images/Buko_pandan.png' },
-    { name: 'Mango Bravo Shake', price: 119, img: 'images/Mango_shake.png' },
-    { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png' },
-    
-    // Add-ons
-    { name: 'Extra Atchara', price: 49, img: 'images/Atchara.png' },
-    { name: 'Java Rice', price: 55, img: 'images/Java_rice.png' }
+$scope.menu = [
+        // Meals
+        { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png', category: 'Meals' },
+        { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png', category: 'Meals' },
+        { name: 'Crispy Pata', price: 499, img: 'images/crispypata.png', category: 'Meals' },
+        { name: 'Sinigang na Hipon', price: 380, img: 'images/sinigang_na_hipon.png', category: 'Meals' },
+        { name: 'Pancit Malabon', price: 139, img: 'images/Image_fd7j23fd7j23fd7j.png', category: 'Meals' },
+        
+        // Drinks
+        { name: 'Buko Pandan', price: 120, img: 'images/Buko_pandan.png', category: 'Drinks' },
+        { name: 'Mango Bravo Shake', price: 119, img: 'images/Mango_shake.png', category: 'Drinks' },
+        { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png', category: 'Drinks' },
+        
+        // Add-ons
+        { name: 'Extra Atchara', price: 49, img: 'images/Atchara.png', category: 'Add-ons' },
+        { name: 'Java Rice', price: 55, img: 'images/Java_rice.png', category: 'Add-ons' }
     ];
+
+    // Add this line to track the active category (default to 'Meals')
+    $scope.activeCategory = 'Meals';
 
     // Helper function to update the browser storage whenever changes happen
     $scope.updateStorage = function() {
