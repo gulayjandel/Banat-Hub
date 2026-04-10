@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="foodApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,75 +7,21 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <style>
-        .scroll-container {
-            max-height: 280px; 
-            overflow-y: auto;  
-            overflow-x: hidden;
-            padding-right: 5px;
-            margin-bottom: 10px;
-        }
-
-        .scroll-container::-webkit-scrollbar {
-            width: 5px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-            background-color: #d1d1d1;
-            border-radius: 10px;
-        }
-
-        .cart-item-info strong {
-            color: #e67e22;
-        }
-        
-        /* Layout for the controls */
-        .cart-controls {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .qty-btn {
-            background: #f1f2f6;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .qty-btn:hover {
-            background: #dfe4ea;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 5px;
-            color: #ff4757;
-            transition: transform 0.1s;
-        }
-
-        .delete-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .quantity-badge {
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 2px 8px;
-            font-size: 12px;
-            font-weight: bold;
-        }
+        .scroll-container { max-height: 280px; overflow-y: auto; overflow-x: hidden; padding-right: 5px; margin-bottom: 10px; }
+        .scroll-container::-webkit-scrollbar { width: 5px; }
+        .scroll-container::-webkit-scrollbar-thumb { background-color: #d1d1d1; border-radius: 10px; }
+        .cart-item-info strong { color: #e67e22; }
+        .cart-controls { display: flex; align-items: center; gap: 5px; }
+        .qty-btn { background: #f1f2f6; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .qty-btn:hover { background: #dfe4ea; }
+        .delete-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 5px; color: #ff4757; transition: transform 0.1s; }
+        .delete-btn:hover { transform: scale(1.2); }
+        .quantity-badge { background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: bold; }
+        /* Style for the Logout Button */
+        .logout-link { background-color: #ff4757 !important; color: white !important; cursor: pointer; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
-<body ng-app="foodApp" ng-controller="CartController">
+<body ng-controller="CartController">
 
     <header>
         <div class="logo">
@@ -91,7 +37,7 @@
         </nav>
         <div class="header-actions">
             <button class="search-icon">🔍</button>
-            <a href="logout.html" class="order-button" style="text-decoration:none;">Logout</a>
+            <button class="order-button logout-link" ng-click="logout()">Logout</button>
             <button class="order-button">Order Now</button>
         </div>
     </header>
@@ -101,7 +47,7 @@
             <img src="images/626533159_34005178872430660_4981941883228089990_n.png" alt="Boodle Fight Feast" class="banner-image"> 
             <div class="banner-text">
                 <h1><span>BANAT HUB</span> PHILIPPINE OFFICIAL SITE</h1>
-                <p>Welcome to Philippines' #1 Bohol Fast Food Hub</p>
+                <p>Welcome, {{currentUser.email}}! Philippines' #1 Bohol Fast Food Hub</p>
             </div>
         </div>
 
@@ -123,11 +69,11 @@
 
             <div class="menu-and-cart">
                 <section class="menu-section">
-                        <div class="menu-categories">
-                            <button ng-class="{'active': activeCategory === 'Meals'}" ng-click="activeCategory = 'Meals'">Meals</button>
-                            <button ng-class="{'active': activeCategory === 'Drinks'}" ng-click="activeCategory = 'Drinks'">Drinks</button>
-                            <button ng-class="{'active': activeCategory === 'Add-ons'}" ng-click="activeCategory = 'Add-ons'">Add-ons</button>
-                        </div>
+                    <div class="menu-categories">
+                        <button ng-class="{'active': activeCategory === 'Meals'}" ng-click="activeCategory = 'Meals'">Meals</button>
+                        <button ng-class="{'active': activeCategory === 'Drinks'}" ng-click="activeCategory = 'Drinks'">Drinks</button>
+                        <button ng-class="{'active': activeCategory === 'Add-ons'}" ng-click="activeCategory = 'Add-ons'">Add-ons</button>
+                    </div>
                     
                     <div class="menu-grid">
                         <a ng-href="product.html?item={{item.name}}" class="menu-item-link" ng-repeat="item in menu | filter:{category: activeCategory}">
@@ -145,7 +91,7 @@
                         <div class="cart-header">
                             <h3>Your Cart</h3>
                             <div class="cart-icons">
-                                <button ng-click="cart = []" title="Clear All">🔄</button>
+                                <button ng-click="clearCart()" title="Clear All">🔄</button>
                             </div>
                         </div>
                         
@@ -173,22 +119,6 @@
                         </div>
                         <button class="view-cart">View Cart</button>
                     </div>
-
-                    <div class="actions-box">
-                        <div class="actions-header">
-                            <h3>Quick Summary</h3>
-                        </div>
-                        <div class="scroll-container">
-                            <div class="action-item" ng-repeat="item in cart track by $index">
-                                <img ng-src="{{item.img}}" alt="Action Item">
-                                <div class="action-info">
-                                    <p>{{item.name}}</p>
-                                    <p class="price">₱ {{item.price}} ea.</p>
-                                </div>
-                                <span class="quantity-badge">Qty: {{item.quantity}}</span>
-                            </div>
-                        </div>
-                    </div>
                 </aside>
             </div>
         </div>
@@ -198,35 +128,44 @@
         <p>&copy; 2026 Banat Hub Official Site - Product details</p>
     </footer>
 
-   <script>
+<script>
 angular.module('foodApp', [])   
 .controller('CartController', function($scope) {
 
-    // LOAD SAVED DATA IMMEDIATELY
+    // 1. LOAD USER DATA AND CART DATA
+    $scope.currentUser = JSON.parse(localStorage.getItem('currentUser')) || { email: 'Guest' };
     $scope.cart = JSON.parse(localStorage.getItem('banatCart')) || [];
 
-$scope.menu = [
-        // Meals
+    // 2. LOGOUT FUNCTION
+    $scope.logout = function() {
+        // Clear the active session
+        localStorage.removeItem('currentUser');
+        
+        // Optional: Clear the cart upon logout if desired
+        // localStorage.removeItem('banatCart');
+
+        alert("Logging out...");
+        
+        // Redirect back to login page
+        // Since home.html is in "banathub_home" folder, use "../" to go up one level
+        window.location.href = "../index.html"; 
+    };
+
+    $scope.menu = [
         { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png', category: 'Meals' },
         { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png', category: 'Meals' },
         { name: 'Crispy Pata', price: 499, img: 'images/crispypata.png', category: 'Meals' },
         { name: 'Sinigang na Hipon', price: 380, img: 'images/sinigang_na_hipon.png', category: 'Meals' },
         { name: 'Pancit Malabon', price: 139, img: 'images/Image_fd7j23fd7j23fd7j.png', category: 'Meals' },
-        
-        // Drinks
         { name: 'Buko Pandan', price: 120, img: 'images/Buko_pandan.png', category: 'Drinks' },
         { name: 'Mango Bravo Shake', price: 119, img: 'images/Mango_shake.png', category: 'Drinks' },
         { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png', category: 'Drinks' },
-        
-        // Add-ons
         { name: 'Extra Atchara', price: 49, img: 'images/Atchara.png', category: 'Add-ons' },
         { name: 'Java Rice', price: 55, img: 'images/Java_rice.png', category: 'Add-ons' }
     ];
 
-    // Add this line to track the active category (default to 'Meals')
     $scope.activeCategory = 'Meals';
 
-    // Helper function to update the browser storage whenever changes happen
     $scope.updateStorage = function() {
         localStorage.setItem('banatCart', JSON.stringify($scope.cart));
     };
