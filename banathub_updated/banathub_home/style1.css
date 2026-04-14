@@ -1,0 +1,360 @@
+/* --- Global Styles --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f7f7f7;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+/* --- Container --- */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- Header --- */
+header {
+    background-color: #4CAF50; /* Green */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 50px;
+    height: 80px;
+}
+
+.logo img {
+    height: 60px;
+    width: auto;
+}
+
+header nav ul {
+    display: flex;
+    gap: 20px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.search-icon {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+}
+
+.order-button {
+    background-color: #C1F1C1; /* Light green */
+    color: #4CAF50;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Banner --- */
+.banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 350px;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.banner-text h1 span {
+    color: #E64A19; /* Red */
+}
+
+/* --- Restaurant Info --- */
+.restaurant-info {
+    text-align: center;
+    margin-top: -60px; /* Overlaps banner slightly */
+    padding-bottom: 20px;
+}
+
+.rating {
+    margin: 10px 0;
+}
+
+.rating span {
+    margin: 0 5px;
+}
+
+.status {
+    display: inline-block;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px 15px;
+}
+
+.open-tag {
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+/* --- Menu and Cart Layout --- */
+.menu-and-cart {
+    display: flex;
+    gap: 30px;
+}
+
+/* --- Menu Section --- */
+.menu-section {
+    flex: 2;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.menu-categories {
+    display: flex;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.menu-categories button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: #666;
+}
+
+.menu-categories button.active {
+    color: #4CAF50;
+    font-weight: bold;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.menu-item img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* --- Cart & Actions Sections (Aside) --- */
+.cart-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-box, .actions-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.cart-header, .actions-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.cart-icons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.cart-item, .action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.cart-item img, .action-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+.cart-item-info, .action-info {
+    flex: 1;
+}
+
+.subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.view-cart {
+    width: 100%;
+    background-color: #F9A825; /* Orange */
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Footer --- */
+footer {
+    padding: 20px;
+    font-size: 12px;
+    color: #666;
+}
+/* --- PROMO PAGE SPECIFIC STYLES --- */
+
+.promo-page .banner-text {
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker banner background for contrast */
+}
+
+.promo-page h2 {
+    font-size: 2em;
+    color: #333; 
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px;
+    padding-bottom: 50px;
+}
+
+.promo-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden; /* Important for the image border-radius */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.promo-image-container {
+    width: 100%;
+    height: 200px; /* A consistent height for the images */
+    overflow: hidden;
+}
+
+.promo-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This makes different aspect ratio images fit well */
+    object-position: center;
+}
+
+.promo-details {
+    padding: 20px;
+    flex-grow: 1; /* Pushes the button to the bottom if needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content within the details */
+    text-align: center;
+}
+
+.promo-details h3 {
+    color: #e67e22; 
+    margin-top: 0;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.promo-details p {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.price-section {
+    margin-bottom: 15px;
+}
+
+.old-price {
+    color: #999;
+    text-decoration: line-through;
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+.new-price {
+    color: #c0392b; /* A prominent red for the new price */
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+.promo-code {
+    background-color: #f1f1f1;
+    color: #333;
+    padding: 10px;
+    border: 1px dashed #999;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: auto; /* Push code and button to the bottom */
+    margin-bottom: 20px;
+}
+
+.promo-order-button {
+    background-color: #c0392b; /* Matching red button */
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.promo-order-button:hover {
+    background-color: #a93226;
+}
+
+/* --- Ensure header styles for active link work correctly --- */
+nav ul li a.active {
+    border-bottom: 2px solid #e67e22; /* Matching orange active state */
+    padding-bottom: 5px;
+}
