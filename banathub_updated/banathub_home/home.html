@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="foodApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banat Hub Official Site</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        .scroll-container { max-height: 280px; overflow-y: auto; overflow-x: hidden; padding-right: 5px; margin-bottom: 10px; }
+        .scroll-container::-webkit-scrollbar { width: 5px; }
+        .scroll-container::-webkit-scrollbar-thumb { background-color: #d1d1d1; border-radius: 10px; }
+        .cart-item-info strong { color: #e67e22; }
+        .cart-controls { display: flex; align-items: center; gap: 5px; }
+        .qty-btn { background: #f1f2f6; border: 1px solid #ced4da; border-radius: 4px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .qty-btn:hover { background: #dfe4ea; }
+        .delete-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 5px; color: #ff4757; transition: transform 0.1s; }
+        .delete-btn:hover { transform: scale(1.2); }
+        .quantity-badge { background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: bold; }
+        /* Style for the Logout Button */
+        .logout-link { background-color: #ff4757 !important; color: white !important; cursor: pointer; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body ng-controller="CartController">
+
+    <header>
+        <div class="logo">
+            <img src="images/629994626_1247707730623982_5654588655489087962_n.png" alt="Banat Hub Logo"> 
+        </div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="#">Location</a></li>
+                <li><a href="promo.html" class="active">Promos</a></li>
+                <li><a href="AboutUs.html">About us</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="search-icon">🔍</button>
+            <button class="order-button logout-link" ng-click="logout()">Logout</button>
+            <button class="order-button">Order Now</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="banner-wrapper">
+            <img src="images/626533159_34005178872430660_4981941883228089990_n.png" alt="Boodle Fight Feast" class="banner-image"> 
+            <div class="banner-text">
+                <h1><span>BANAT HUB</span> PHILIPPINE OFFICIAL SITE</h1>
+                <p>Welcome, {{currentUser.email}}! Philippines' #1 Bohol Fast Food Hub</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <section class="restaurant-info">
+                <h2>Kaon Tanan!</h2>
+                <div class="rating">
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                    <span class="score">5.0</span>
+                    <span class="reviews">205 reviews</span>
+                    <span class="cuisine">₱₱ Filipino</span>
+                    <span class="delivery">₱ 30 Delivery Fee</span>
+                </div>
+                <div class="status">
+                    <span class="open-tag">Open</span>
+                    <span class="hours">Open 24 hours</span>
+                </div>
+            </section>
+
+            <div class="menu-and-cart">
+                <section class="menu-section">
+                    <div class="menu-categories">
+                        <button ng-class="{'active': activeCategory === 'Meals'}" ng-click="activeCategory = 'Meals'">Meals</button>
+                        <button ng-class="{'active': activeCategory === 'Drinks'}" ng-click="activeCategory = 'Drinks'">Drinks</button>
+                        <button ng-class="{'active': activeCategory === 'Add-ons'}" ng-click="activeCategory = 'Add-ons'">Add-ons</button>
+                    </div>
+                    
+                    <div class="menu-grid">
+                        <a ng-href="product.html?item={{item.name}}" class="menu-item-link" ng-repeat="item in menu | filter:{category: activeCategory}">
+                            <div class="menu-item">
+                                <img ng-src="{{item.img}}" alt="{{item.name}}">
+                                <p><strong>{{item.name}}</strong></p>
+                                <p class="price">₱ {{item.price}}</p>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <aside class="cart-section">
+                    <div class="cart-box">
+                        <div class="cart-header">
+                            <h3>Your Cart</h3>
+                            <div class="cart-icons">
+                                <button ng-click="clearCart()" title="Clear All">🔄</button>
+                            </div>
+                        </div>
+                        
+                        <div class="scroll-container">
+                            <div class="cart-items">
+                                <div class="cart-item" ng-repeat="item in cart track by $index">
+                                    <img ng-src="{{item.img}}" alt="Cart Item">
+                                    <div class="cart-item-info">
+                                        <p>{{item.name}} <strong>x{{item.quantity}}</strong></p>
+                                        <p class="price">₱ {{item.price * item.quantity}}</p>
+                                    </div>
+                                    <div class="cart-controls">
+                                        <button class="qty-btn" ng-click="reduceQuantity($index)">−</button>
+                                        <button class="qty-btn" ng-click="addQuantity($index)">+</button>
+                                        <button class="delete-btn" ng-click="deleteItem($index)" title="Remove Item">🗑️</button>
+                                    </div>
+                                </div>
+                                <p ng-if="cart.length === 0" style="text-align:center; padding: 20px; color: #888;">Cart is empty</p>
+                            </div>
+                        </div>
+
+                        <div class="subtotal">
+                            <span>Subtotal</span>
+                            <span class="subtotal-price">₱{{ getTotal() }}</span>
+                        </div>
+                        <button class="view-cart">View Cart</button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Banat Hub Official Site - Product details</p>
+    </footer>
+
+<script>
+angular.module('foodApp', [])   
+.controller('CartController', function($scope) {
+
+    // 1. LOAD USER DATA AND CART DATA
+    $scope.currentUser = JSON.parse(localStorage.getItem('currentUser')) || { email: 'Guest' };
+    $scope.cart = JSON.parse(localStorage.getItem('banatCart')) || [];
+
+    // 2. LOGOUT FUNCTION
+    $scope.logout = function() {
+        // Clear the active session
+        localStorage.removeItem('currentUser');
+        
+        // Optional: Clear the cart upon logout if desired
+        // localStorage.removeItem('banatCart');
+
+        alert("Logging out...");
+        
+        // Redirect back to login page
+        // Since home.html is in "banathub_home" folder, use "../" to go up one level
+        window.location.href = "../index.html"; 
+    };
+
+    $scope.menu = [
+        { name: 'Grilled Liempo', price: 159, img: 'images/Image_gjddywgjddywgjdd.png', category: 'Meals' },
+        { name: 'Crispy Pork Sisig', price: 149, img: 'images/Image_ytla93ytla93ytla.png', category: 'Meals' },
+        { name: 'Crispy Pata', price: 499, img: 'images/crispypata.png', category: 'Meals' },
+        { name: 'Sinigang na Hipon', price: 380, img: 'images/sinigang_na_hipon.png', category: 'Meals' },
+        { name: 'Pancit Malabon', price: 139, img: 'images/Image_fd7j23fd7j23fd7j.png', category: 'Meals' },
+        { name: 'Buko Pandan', price: 120, img: 'images/Buko_pandan.png', category: 'Drinks' },
+        { name: 'Mango Bravo Shake', price: 119, img: 'images/Mango_shake.png', category: 'Drinks' },
+        { name: 'Strawberry Milkshake', price: 99, img: 'images/Image_875ofv875ofv875o.png', category: 'Drinks' },
+        { name: 'Extra Atchara', price: 49, img: 'images/Atchara.png', category: 'Add-ons' },
+        { name: 'Java Rice', price: 55, img: 'images/Java_rice.png', category: 'Add-ons' }
+    ];
+
+    $scope.activeCategory = 'Meals';
+
+    $scope.updateStorage = function() {
+        localStorage.setItem('banatCart', JSON.stringify($scope.cart));
+    };
+
+    $scope.addQuantity = function(index) {
+        $scope.cart[index].quantity += 1;
+        $scope.updateStorage();
+    };
+
+    $scope.reduceQuantity = function(index) {
+        if ($scope.cart[index].quantity > 1) {
+            $scope.cart[index].quantity -= 1;
+        } else {
+            $scope.cart.splice(index, 1);
+        }
+        $scope.updateStorage();
+    };
+
+    $scope.deleteItem = function(index) {
+        $scope.cart.splice(index, 1);
+        $scope.updateStorage();
+    };
+
+    $scope.clearCart = function() {
+        $scope.cart = [];
+        $scope.updateStorage();
+    };
+
+    $scope.getTotal = function() {
+        let total = 0;
+        $scope.cart.forEach(item => {
+            total += (item.price * item.quantity);
+        });
+        return total;
+    };
+});
+</script>
+</body>
+</html>
