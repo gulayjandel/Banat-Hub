@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - Banat Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific styles for the Map Layout */
+        .location-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: -56px auto 48px; /* Matches the "overlap" look of the checkout page */
+            position: relative;
+            z-index: 2;
+        }
+
+        .map-card {
+            background: #ffffff;
+            border: 1px solid #e8e2d8;
+            border-radius: 22px;
+            box-shadow: 0 16px 32px rgba(64, 45, 16, 0.12);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .map-wrapper {
+            width: 100%;
+            height: 450px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="checkout-page"> <header>
+        <div class="logo">
+            <img src="images/629994626_1247707730623982_5654588655489087962_n.png" alt="Banat Hub Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="location.html" class="active">Location</a></li>
+                <li><a href="promo.html">Promos</a></li>
+                <li><a href="about.html">About us</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="order-button">Order Now</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="banner-wrapper">
+            <img src="images/626533159_34005178872430660_4981941883228089990_n.png" alt="Banner" class="banner-image">
+            <div class="banner-text">
+                <h1><span>ORDER</span> TRACKING</h1>
+                <p>Tracking your feast from Holy Name University to your doorstep.</p>
+            </div>
+        </div>
+
+        <section class="location-shell">
+            <div class="map-card">
+                <div class="status-badge">🛵 Out for Delivery</div>
+                <h3 id="deliveryRouteTitle">From Holy Name University</h3>
+                <p id="destAddress" style="color: #6b7280;">Detecting destination...</p>
+
+                <div class="map-wrapper" id="mapFrame">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Banat Hub Official Site - Tagbilaran City, Bohol</p>
+    </footer>
+
+<script>
+    // 1. Get data from localStorage
+    // We check for the cart to see if they actually have an active order
+    const cart = JSON.parse(localStorage.getItem('banatCart')) || [];
+    const customerAddress = localStorage.getItem('deliveryAddress');
+    const basePoint = "Holy Name University, Tagbilaran City, Bohol";
+
+    // Select the UI elements we need to change
+    const statusBadge = document.querySelector('.status-badge');
+    const destText = document.getElementById('destAddress');
+    const mapFrame = document.getElementById('mapFrame');
+
+    // 2. Logic Check: If cart is empty or no address, hide the tracking
+    if (cart.length === 0 || !customerAddress) {
+        statusBadge.style.backgroundColor = "#9ca3af"; // Turn the badge gray
+        statusBadge.innerText = "No Active Order";
+        destText.innerText = "Please place an order at checkout to see your delivery route.";
+        mapFrame.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#888; flex-direction:column;">
+                <p>Awaiting order details...</p>
+                <a href="home.html" style="color:var(--green); text-decoration:none; font-weight:bold;">Go to Menu</a>
+            </div>`;
+    } else {
+        // 3. Order is active: Show the "Out for Delivery" status
+        statusBadge.innerText = "🛵 Out for Delivery";
+        destText.innerText = "Destination: " + customerAddress;
+
+        // 4. The "Track Lines" Fix
+        // We use the 'dir' (directions) parameter instead of 'search'
+        // This forces Google Maps to try and draw a path between the two points
+        const encodedOrigin = encodeURIComponent(basePoint);
+        const encodedDest = encodeURIComponent(customerAddress);
+        
+        // This URL structure is designed to trigger the Directions view in the embed
+        const routeUrl = `https://maps.google.com/maps?saddr=${encodedOrigin}&daddr=${encodedDest}&output=embed`;
+
+        mapFrame.innerHTML = `<iframe src="${routeUrl}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+    }
+</script>   
+</body>
+</html>

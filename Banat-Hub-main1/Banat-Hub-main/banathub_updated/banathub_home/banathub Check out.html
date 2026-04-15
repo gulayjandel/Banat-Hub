@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banat Hub Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --green: #4caf50;
+            --green-dark: #2f7d32;
+            --cream: #fff9ef;
+            --orange: #22e62f;
+            --red: #c0392b;
+            --text: #2f2f2f;
+            --muted: #6b7280;
+            --card: #ffffff;
+            --line: #e8e2d8;
+            --shadow: 0 16px 32px rgba(64, 45, 16, 0.12);
+        }
+
+        body.checkout-page {
+            background:
+                radial-gradient(circle at top left, rgba(230, 126, 34, 0.16), transparent 28%),
+                linear-gradient(180deg, #fff6e8 0%, #f6f8f2 45%, #eef7ef 100%);
+            color: var(--text);
+        }
+
+        .checkout-page .banner-wrapper {
+            height: 300px;
+        }
+
+        .checkout-page .banner-text {
+            width: min(760px, calc(100% - 40px));
+            padding: 24px 28px;
+            background: rgba(22, 30, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            backdrop-filter: blur(6px);
+        }
+
+        .checkout-page .banner-text h1 {
+            margin-bottom: 12px;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .checkout-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: -56px auto 48px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .checkout-intro {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 236, 0.94));
+            border: 1px solid rgba(230, 126, 34, 0.18);
+            border-radius: 24px;
+            padding: 24px 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .checkout-intro h2 {
+            margin: 0 0 8px;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+        }
+
+        .checkout-intro p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .checkout-main,
+        .checkout-sidebar {
+            display: grid;
+            gap: 20px;
+        }
+
+        .checkout-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 22px 24px 10px;
+        }
+
+        .card-header h3 {
+            margin: 0 0 6px;
+            font-size: 1.2rem;
+        }
+
+        .card-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 0 24px 24px;
+        }
+
+        .meal-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .meal-option {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+            background: #fffdf9;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .meal-option:hover,
+        .meal-option.active {
+            transform: translateY(-2px);
+            border-color: rgba(230, 126, 34, 0.55);
+            box-shadow: 0 12px 24px rgba(230, 126, 34, 0.15);
+        }
+
+        .meal-option h4 {
+            margin: 0 0 8px;
+            color: var(--red);
+        }
+
+        .meal-option p {
+            margin: 0 0 12px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            min-height: 40px;
+        }
+
+        .meal-option strong {
+            font-size: 1.15rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d7d4cc;
+            border-radius: 14px;
+            font: inherit;
+            color: var(--text);
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.12);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .choice-chip {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .choice-chip input {
+            display: none;
+        }
+
+        .choice-chip span {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #fffdf9;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .choice-chip input:checked + span {
+            border-color: rgba(76, 175, 80, 0.5);
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--green-dark);
+        }
+
+        .summary-panel {
+            padding: 24px;
+            position: sticky;
+            top: 18px;
+        }
+
+        .summary-hero {
+            padding: 18px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #2f7d32, #58b95d);
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .summary-hero small {
+            display: block;
+            opacity: 0.86;
+            margin-bottom: 6px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .summary-hero h3 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .summary-item,
+        .summary-total,
+        .summary-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+        }
+
+        .summary-item span:first-child,
+        .summary-meta span:first-child {
+            color: var(--muted);
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: var(--line);
+            margin: 6px 0;
+        }
+
+        .summary-total {
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
+
+        .quantity-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 18px 0 8px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: var(--cream);
+        }
+
+        .quantity-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-controls button {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            background: var(--green);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .quantity-number {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .checkout-note {
+            margin: 18px 0 0;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #fff8e8;
+            color: #82520f;
+            font-size: 0.92rem;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            margin-top: 18px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2f7d32, #58b95d);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .place-order-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 20px rgba(47, 125, 50, 0.24);
+        }
+
+        .order-status {
+            display: none;
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(76, 175, 80, 0.12);
+            color: var(--green-dark);
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+        }
+
+        @media (max-width: 920px) {
+            header {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 14px;
+                height: auto;
+                padding: 16px 20px;
+            }
+
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-shell {
+                margin-top: -38px;
+            }
+
+            .checkout-page .banner-wrapper {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body class="checkout-page">
+    <header>
+        <div class="logo">
+            <img src="images/629994626_1247707730623982_5654588655489087962_n.png" alt="Banat Hub Logo">
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="location.html">Location</a></li>
+                <li><a href="promo.html">Promos</a></li>
+                <li><a href="AboutUs.html">About us</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <button class="order-button" type="button">Order Now</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="banner-wrapper">
+            <img src="images/626533159_34005178872430660_4981941883228089990_n.png" alt="Banat Hub Feast Banner" class="banner-image">
+            <div class="banner-text">
+                <h1><span>BANAT HUB</span> CHECKOUT</h1>
+                <p>Complete your order in a few quick steps and get your favorites delivered fresh.</p>
+            </div>
+        </div>
+
+        <section class="checkout-shell">
+            <div class="checkout-intro">
+                <h2>Ready to place your order?</h2>
+                <p>Select a meal, enter your delivery details, and review the total before confirming.</p>
+            </div>
+
+            <div class="checkout-grid">
+                <div class="checkout-main">
+<section class="checkout-card">
+    <div class="card-header">
+        <h3>1. Chef's Recommendations</h3>
+        <p>Complete your feast with these popular Banat Hub favorites!</p>
+    </div>
+    <div class="card-body">
+        <div class="meal-options">
+            <article class="meal-option" onclick="quickAdd('Buko Pandan', 120, 'images/Buko_pandan.png')">
+                <h4>Buko Pandan</h4>
+                <p>Cool and creamy dessert with real macapuno strings.</p>
+                <strong>₱120</strong>
+                <div style="margin-top:10px; font-size: 0.8rem; color: #2f7d32;">+ Click to add</div>
+            </article>
+
+            <article class="meal-option" onclick="quickAdd('Java Rice', 55, 'images/Java_rice.png')">
+                <h4>Extra Java Rice</h4>
+                <p>A signature pairing for our Grilled Liempo.</p>
+                <strong>₱55</strong>
+                <div style="margin-top:10px; font-size: 0.8rem; color: #2f7d32;">+ Click to add</div>
+            </article>
+
+            <article class="meal-option" onclick="quickAdd('Crispy Pork Sisig', 149, 'images/Image_ytla93ytla93ytla.png')">
+                <h4>Solo Sisig</h4>
+                <p>Perfect as a side or an extra topping.</p>
+                <strong>₱149</strong>
+                <div style="margin-top:10px; font-size: 0.8rem; color: #2f7d32;">+ Click to add</div>
+            </article>
+        </div>
+    </div>
+</section>
+
+                    <section class="checkout-card">
+                        <div class="card-header">
+                            <h3>2. Customer details</h3>
+                            <p>Use complete information so the rider can reach you without delays.</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="checkoutForm">
+                                <div class="form-grid">
+                                    <div class="field-group">
+                                        <label for="fullName">Full name</label>
+                                        <input id="fullName" type="text" placeholder="Enter your full name" required>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label for="phoneNumber">Phone number</label>
+                                        <input id="phoneNumber" type="tel" placeholder="09XXXXXXXXX" required>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label for="emailAddress">Email address</label>
+                                        <input id="emailAddress" type="email" placeholder="name@example.com">
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label for="branch">Preferred branch</label>
+                                        <select id="branch">
+                                            <option value="Banat Hub Main Branch">Banat Hub Main Branch</option>
+                                            <option value="Banat Hub North Point">Banat Hub North Point</option>
+                                            <option value="Banat Hub City Center">Banat Hub City Center</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field-group full">
+                                        <label for="address">Delivery address</label>
+                                        <textarea id="address" placeholder="House number, street, barangay, city" required></textarea>
+                                    </div>
+
+                                    <div class="field-group full">
+                                        <label for="notes">Order notes</label>
+                                        <textarea id="notes" placeholder="Add delivery instructions, spice preference, or special requests"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section class="checkout-card">
+                        <div class="card-header">
+                            <h3>3. Delivery and payment</h3>
+                            <p>Choose the setup that works best for your order.</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="field-group">
+                                <label>Delivery option</label>
+                                <div class="chip-row">
+                                    <label class="choice-chip">
+                                        <input type="radio" name="deliveryOption" value="Delivery" checked>
+                                        <span>Delivery</span>
+                                    </label>
+
+                                    <label class="choice-chip">
+                                        <input type="radio" name="deliveryOption" value="Pickup">
+                                        <span>Store Pickup</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="field-group" style="margin-top: 18px;">
+                                <label>Payment method</label>
+                                <div class="chip-row">
+                                    <label class="choice-chip">
+                                        <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                                        <span>Cash on Delivery</span>
+                                    </label>
+
+                                    <label class="choice-chip">
+                                        <input type="radio" name="paymentMethod" value="GCash">
+                                        <span>GCash</span>
+                                    </label>
+
+                                    <label class="choice-chip">
+                                        <input type="radio" name="paymentMethod" value="Maya">
+                                        <span>Maya</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="checkout-sidebar">
+    <section class="checkout-card summary-panel">
+        <div class="summary-hero">
+            <small>Order summary</small>
+            <h3 id="summaryMealName">Your Cart Items</h3>
+        </div>
+
+        <div class="summary-meta">
+            <span>Branch</span>
+            <span id="summaryBranch">Banat Hub Main Branch</span>
+        </div>
+
+        <div id="cartItemsList" style="padding: 10px 0; border-bottom: 1px solid var(--line);">
+            </div>
+
+        <div class="summary-item">
+            <span>Delivery fee</span>
+            <span id="summaryDeliveryFee">₱60.00</span>
+        </div>
+
+        <div class="summary-item">
+            <span>Service charge</span>
+            <span id="summaryServiceFee">₱15.00</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-total">
+            <span>Total</span>
+            <span id="summaryTotal">₱0.00</span>
+        </div>
+
+        <p class="checkout-note" id="deliveryMessage">
+            Delivery usually arrives within 35 to 50 minutes.
+        </p>
+
+        <button class="place-order-btn" type="button" id="placeOrderButton">Place Order</button>
+        <div class="order-status" id="orderStatus"></div>
+    </section>
+</aside>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Promo prices, delivery times, and payment availability may vary by branch.</p>
+    </footer>
+
+<script>
+    // Load data from the home.html storage
+    let cart = JSON.parse(localStorage.getItem('banatCart')) || [];
+
+    // Select UI elements
+    const cartItemsList = document.getElementById("cartItemsList");
+    const summaryTotal = document.getElementById("summaryTotal");
+    const summaryDeliveryFee = document.getElementById("summaryDeliveryFee");
+    const summaryServiceFee = document.getElementById("summaryServiceFee");
+    const orderStatus = document.getElementById("orderStatus");
+
+    function formatPeso(amount) {
+        return "₱" + amount.toLocaleString("en-PH", { minimumFractionDigits: 2 });
+    }
+
+    // Function for the "Chef's Recommendation" buttons
+    window.quickAdd = function(name, price, img) {
+        const existingItem = cart.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ name: name, price: price, img: img, quantity: 1 });
+        }
+        localStorage.setItem('banatCart', JSON.stringify(cart));
+        updateSummary(); // Refresh the UI immediately
+    };
+
+    function updateSummary() {
+        cartItemsList.innerHTML = "";
+        let subtotal = 0;
+
+        if (cart.length === 0) {
+            cartItemsList.innerHTML = "<p style='text-align:center; color:#888;'>Cart is empty</p>";
+        }
+
+        // Render each item from the cart
+        cart.forEach((item) => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "summary-item";
+            itemDiv.style.padding = "5px 0";
+            itemDiv.innerHTML = `
+                <span style="color: var(--text); font-size: 0.9rem;">${item.name} <strong>x${item.quantity}</strong></span>
+                <span style="font-weight: bold;">${formatPeso(itemTotal)}</span>
+            `;
+            cartItemsList.appendChild(itemDiv);
+        });
+
+        // Calculate Fees based on Delivery Option
+        const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+        const deliveryFee = deliveryOption === "Pickup" ? 0 : 60;
+        const serviceCharge = subtotal > 0 ? 15 : 0;
+        const finalTotal = subtotal + deliveryFee + serviceCharge;
+
+        // Update the numbers on the screen
+        summaryDeliveryFee.textContent = formatPeso(deliveryFee);
+        summaryServiceFee.textContent = formatPeso(serviceCharge);
+        summaryTotal.textContent = formatPeso(finalTotal);
+    }
+
+    // Event Listeners for Delivery Options
+    document.querySelectorAll('input[name="deliveryOption"]').forEach(input => {
+        input.addEventListener("change", updateSummary);
+    });
+
+    // Event Listener for Branch change
+    document.getElementById("branch").addEventListener("change", function() {
+        document.getElementById("summaryBranch").textContent = this.value;
+    });
+
+// Handle Place Order
+    document.getElementById("placeOrderButton").addEventListener("click", function() {
+        const fullName = document.getElementById("fullName").value.trim();
+        const address = document.getElementById("address").value.trim();
+
+        // Check if cart has items
+        if (cart.length === 0) {
+            alert("Please add items to your cart first!");
+            return;
+        }
+
+        // Check if required fields are filled
+        if (!fullName || !address) {
+            alert("Please enter your name and delivery address.");
+            return;
+        }
+
+        // 1. Save the address so location.html can use it
+        localStorage.setItem('deliveryAddress', address);
+
+        // 2. Show success message
+        orderStatus.style.display = "block";
+        orderStatus.textContent = "Salamat, " + fullName + "! Your order is being processed.";
+
+        // 3. Optional: Redirect to the tracking page automatically after 2 seconds
+        setTimeout(() => {
+            window.location.href = "location.html";
+        }, 2000);
+    });
+
+    // Run on page load
+    updateSummary();
+</script>
+</body>
+</html>
